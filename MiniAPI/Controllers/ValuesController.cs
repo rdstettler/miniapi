@@ -1,45 +1,57 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MiniAPI.Definitions.Services;
+using System.Collections.Generic;
 
 namespace MiniAPI.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
-    public class ValuesController : ControllerBase
+    [Authorize]
+    public class ValuesController : BaseController<IValuesService>
     {
+        public ValuesController(IValuesService service) : base(service)
+        {
+
+        }
+
         // GET api/values
         [HttpGet]
+        [Route("value")]
         public ActionResult<IEnumerable<string>> Get()
         {
-            return new string[] { "value1", "value2" };
+            return service.GetAll();
         }
 
         // GET api/values/5
-        [HttpGet("{id}")]
-        public ActionResult<string> Get(int id)
+        [HttpGet]
+        [Route("value/{id}")]
+        public ActionResult<string> Get([FromRoute] int id)
         {
-            return "value";
+            return service.Get(id);
         }
 
         // POST api/values
         [HttpPost]
+        [Route("value")]
         public void Post([FromBody] string value)
         {
+            service.Post(value);
         }
 
         // PUT api/values/5
-        [HttpPut("{id}")]
+        [HttpPut]
+        [Route("value/{id}")]
         public void Put(int id, [FromBody] string value)
         {
+            service.Put(id, value);
         }
 
         // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete]
+        [Route("value/{id}")]
+        public void Delete([FromRoute] int id)
         {
+            service.Delete(id);
         }
     }
 }
